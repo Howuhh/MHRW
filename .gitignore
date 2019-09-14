@@ -1,0 +1,8 @@
+# data
+data/
+
+# ds
+.DS_Store
+
+# virtualenv
+.python_version
