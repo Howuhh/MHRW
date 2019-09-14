@@ -21,7 +21,8 @@ class MHRWSampler(object):
         Notes
         -----
 
-        """   self.path = path
+        """   
+        self.path = path
         self.graph = graph
         self.method = method
         self.spark = spark
