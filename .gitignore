@@ -9,3 +9,10 @@ data/
 
 # vscode
 .vscode
+
+#python
+__pycache__
+mhrw/__pycache__
+
+# jupyter
+.ipynb_checkpoints

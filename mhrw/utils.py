@@ -34,7 +34,7 @@ def graph_filter_ids(edge_list, filter_ids):
             .join(filter_ids, edge_list["user"] == filter_ids["user_id"])
             .drop("user_id")
             .join(filter_ids, edge_list["item"] == filter_ids["user_id"])
-            .select("user", "item", "rating"))
+            .select("user", "item"))
 
     return edge_list_filt
 

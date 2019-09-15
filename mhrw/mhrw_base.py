@@ -1,14 +1,19 @@
-import logging
+import logging as log 
 import numpy as np
 
 import pyspark.sql.functions as F
 
 from itertools import count
 from pyspark.sql.types import IntegerType
+from pyspark.sql import DataFrame
 from .utils import arr_choice, arr_len, rename_columns
 
+log.basicConfig(level=log.INFO, 
+                    format='%(levelname)s - %(asctime)s: %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
-def MHRW(graph, path, seed_ratio=0.001, budget_ratio=0.1, accept_func="MHRW", alpha=0.5):
+
+def MHRW(graph: DataFrame, path, seed_ratio=0.001, budget_ratio=0.1, accept_func="MHRW", alpha=0.5):
     """
     Set docstring here.
 
@@ -25,10 +30,10 @@ def MHRW(graph, path, seed_ratio=0.001, budget_ratio=0.1, accept_func="MHRW", al
     -------
 
     """
-    if seed_ratio >= 1 or seed_ratio <= 0:
+    if not 0 <= seed_ratio <= 1:
         raise ValueError("seed ratio should be in range (0, 1)")
 
-    if budget_ratio >= 1 or budget_ratio <= 0:
+    if not 0 <= budget_ratio <= 1:
         raise ValueError("budget ratio should be in range (0, 1)")
 
     sample_seed = np.random.random()
@@ -37,22 +42,32 @@ def MHRW(graph, path, seed_ratio=0.001, budget_ratio=0.1, accept_func="MHRW", al
     seed_nodes = graph.sample(False, seed_ratio, seed=sample_seed).persist()
     seed_nodes.select("user").write.parquet(path, mode="overwrite")
 
-    cache = [seed_nodes]
     nodes_sampled_count = seed_nodes.count()
-    print(f"INFO: sampled {nodes_sampled_count} seed nodes, budget: {budget}")
+    log.info(f"sampled {nodes_sampled_count} seed nodes, budget: {budget}")
 
+    progress_total = 0.0
+    cache = [seed_nodes]
     for iter_ in count():
         if nodes_sampled_count < budget:
             new_nodes, nodes_count = _iter_MHRW(graph, cache[iter_], accept_func=accept_func, alpha=alpha)
 
             cache.append(new_nodes.persist())
-            nodes_sampled_count += nodes_count
             cache[iter_].unpersist()
 
+            nodes_sampled_count += nodes_count
+
             new_nodes.select("user").write.parquet(path, mode="append")
-            print(f"INFO: iteration {iter_}, sampled {nodes_sampled_count} nodes, progress: {round((nodes_sampled_count / budget)*100, 2)}%")
+
+            progress_iter = round((nodes_sampled_count / budget)*100, 2)
+
+            if abs(progress_total - progress_iter) < 0.5:
+                log.warn(f"gain lower than 0.5%, stop sampling!")
+                break
+            else:
+                log.info(f"iteration {iter_ + 1}, sampled {nodes_sampled_count} nodes, progress: {progress_iter}%")
+                progress_total = progress_iter
         else:
-            print(f"INFO: the budget has been spent! stop sampling")
+            log.info(f"the budget has been spent! stop sampling")
             break
 
     seed_nodes.unpersist()

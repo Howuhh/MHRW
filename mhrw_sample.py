@@ -1,4 +1,5 @@
 import click
+import logging as log
 
 from config import CONF_PARAMS
 from mhrw.utils import start_session
