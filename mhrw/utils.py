@@ -1,13 +1,18 @@
 import numpy as np
 
 import pyspark.sql.functions as F
+
+from pyspark import SparkContext
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import IntegerType, LongType
+
+from typing import Dict, Tuple
 
 arr_len = F.udf(lambda arr: len(arr), IntegerType())
 arr_choice = F.udf(lambda arr: int(np.random.choice(arr)), LongType())
 
 
-def start_session(task_name, **kwargs):
+def start_session(task_name: str, **kwargs) -> Tuple[SparkSession, SparkContext]:
     from pyspark import SparkConf
     from pyspark.sql import SparkSession
 
@@ -29,7 +34,7 @@ def start_session(task_name, **kwargs):
     return spark, sc
 
 
-def graph_filter_ids(edge_list, filter_ids):
+def graph_filter_ids(edge_list: DataFrame, filter_ids: DataFrame) -> DataFrame:
     edge_list_filt = (edge_list
             .join(filter_ids, edge_list["user"] == filter_ids["id"])
             .drop("id")
@@ -39,7 +44,7 @@ def graph_filter_ids(edge_list, filter_ids):
     return edge_list_filt
 
 
-def rename_columns(df, columns):
+def rename_columns(df: DataFrame, columns: Dict[str, str]) -> DataFrame:
     if isinstance(columns, dict):
         for old_name, new_name in columns.items():
             df = df.withColumnRenamed(old_name, new_name)

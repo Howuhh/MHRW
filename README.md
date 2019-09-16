@@ -1,9 +1,7 @@
 # MHRW
 metropolis hastings random walk implementation with pyspark
 
-![code](https://i.imgur.com/lCK1sW5.png)
-
-# CLI
+# How to use
 
 ```console
 Usage: mhrw_sample.py [OPTIONS] EDGES_PATH SAMPLE_SAVE_PATH
@@ -36,16 +34,20 @@ Options:
                         acceptance function of node acceptance or rejection on
                         each iteration. When alpha = 1 the algorithm is
                         reduced to the original MHRW, when alpha = 0 to the
-                        simply random walk
+                        simply random walk.
   --help                Show this message and exit.
 ```
 
+# Theory
+
+![code](https://i.imgur.com/lCK1sW5.png)
+
 # References
 
-- Wang, T., Chen, Y., Zhang, Z., Xu, T., Jin, L., Hui, P., … Li, X. (2011). Understanding Graph Sampling Algorithms for Social Network Analysis. 
-    2011 31st International Conference on Distributed Computing Systems Workshops, 123–128. 
-    https://doi.org/10.1109/ICDCSW.2011.34https://doi.org/10.1109/ICDE.2015.7113345
+- Wang, T., Chen, Y., Zhang, Z., Xu, T., Jin, L., Hui, P., … Li, X. (2011). Understanding Graph Sampling Algorithms for Social Network Analysis.        
+    2011 31st International Conference on Distributed Computing Systems Workshops, 123–128.         
+    https://doi.org/10.1109/ICDCSW.2011.34https://doi.org/10.1109/ICDE.2015.7113345     
 
-- Li, R., Yu, J. X., Qin, L., Mao, R., & Jin, T. (2015). On random walk based graph sampling. 
-    2015 IEEE 31st International Conference on Data Engineering, 927–938. 
-    https://doi.org/10.1109/ICDE.2015.7113345
+- Li, R., Yu, J. X., Qin, L., Mao, R., & Jin, T. (2015). On random walk based graph sampling.               
+    2015 IEEE 31st International Conference on Data Engineering, 927–938.       
+    https://doi.org/10.1109/ICDE.2015.7113345       
