@@ -1,7 +1,7 @@
 # MHRW
 metropolis hastings random walk implementation with pyspark
 
-![pseudocode](https://imgur.com/lCK1sW5)
+![code](https://i.imgur.com/lCK1sW5.png)
 
 # CLI
 
