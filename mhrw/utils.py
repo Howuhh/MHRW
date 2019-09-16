@@ -31,9 +31,9 @@ def start_session(task_name, **kwargs):
 
 def graph_filter_ids(edge_list, filter_ids):
     edge_list_filt = (edge_list
-            .join(filter_ids, edge_list["user"] == filter_ids["user_id"])
-            .drop("user_id")
-            .join(filter_ids, edge_list["item"] == filter_ids["user_id"])
+            .join(filter_ids, edge_list["user"] == filter_ids["id"])
+            .drop("id")
+            .join(filter_ids, edge_list["item"] == filter_ids["id"])
             .select("user", "item"))
 
     return edge_list_filt

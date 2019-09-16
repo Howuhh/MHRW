@@ -1,10 +1,14 @@
+import shutil
+
 import logging as log 
 import numpy as np
 
 import pyspark.sql.functions as F
 
 from itertools import count
+from typing import Tuple
 from pyspark.sql.types import IntegerType
+from pyspark.sql import SparkSession
 from pyspark.sql import DataFrame
 from .utils import arr_choice, arr_len, rename_columns
 
@@ -13,14 +17,17 @@ log.basicConfig(level=log.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 
-def MHRW(graph: DataFrame, path, seed_ratio=0.001, budget_ratio=0.1, accept_func="MHRW", alpha=0.5):
+# TODO: добавить загрузку айдишек + уникальные в return, так будет проще и для модели и для использования, т.к. 
+# для других не очевидно, что в файлик сохраняется адишки с повторениями.
+def MHRW(graph: DataFrame, ids_path: str, seed_ratio: float=0.001, 
+        budget_ratio: float=0.1, accept_func: str="MHRW", alpha: float=0.5) -> None:
     """
     Set docstring here.
 
     Parameters
     ----------
     graph: 
-    path: 
+    tmp_path: 
     seed_ratio=0.001: 
     budget_ratio=0.1: 
     accept_func="MHRW": 
@@ -40,23 +47,26 @@ def MHRW(graph: DataFrame, path, seed_ratio=0.001, budget_ratio=0.1, accept_func
     budget = int(graph.count() * budget_ratio)
 
     seed_nodes = graph.sample(False, seed_ratio, seed=sample_seed).persist()
-    seed_nodes.select("user").write.parquet(path, mode="overwrite")
+    seed_nodes.select("user").write.parquet(ids_path, mode="overwrite")
 
     nodes_sampled_count = seed_nodes.count()
     log.info(f"sampled {nodes_sampled_count} seed nodes, budget: {budget}")
 
     progress_total = 0.0
     cache = [seed_nodes]
+
     for iter_ in count():
         if nodes_sampled_count < budget:
-            new_nodes, nodes_count = _iter_MHRW(graph, cache[iter_], accept_func=accept_func, alpha=alpha)
+            new_nodes, nodes_count = _iter_MHRW(graph, cache[iter_],
+                                                accept_func=accept_func, alpha=alpha)
 
             cache.append(new_nodes.persist())
             cache[iter_].unpersist()
 
+            # use accumulator?
             nodes_sampled_count += nodes_count
 
-            new_nodes.select("user").write.parquet(path, mode="append")
+            new_nodes.select("user").write.parquet(ids_path, mode="append")
 
             progress_iter = round((nodes_sampled_count / budget)*100, 2)
 
@@ -75,7 +85,7 @@ def MHRW(graph: DataFrame, path, seed_ratio=0.001, budget_ratio=0.1, accept_func
     return None
 
 
-def _iter_MHRW(user_neigh, seed_nodes, accept_func="MHRW", alpha=0.5):
+def _iter_MHRW(user_neigh: DataFrame, seed_nodes: DataFrame, accept_func: str="MHRW", alpha: float=0.5) -> Tuple[DataFrame, int]:
     """
     Set docstring here.
 

@@ -16,3 +16,6 @@ mhrw/__pycache__
 
 # jupyter
 .ipynb_checkpoints
+
+# mypy
+.mypy_cache
