@@ -16,6 +16,13 @@ Usage: mhrw_sample.py [OPTIONS] EDGES_PATH SAMPLE_SAVE_PATH
   probability 1/d_u, MH accepts v as a sample with probability min{1,
   d_u/d_v}, and reject it with probability 1 − min{1, d_u/d_v}, where N(u)
   is set of u neighbors and d_i degree of i's node.
+  
+  Above is a description of how the algorithm works in relation to one
+  node. In this implementation, a certain percentage of seed nodes is
+  selected first, and then random walk begins for each one. Due to the  fact
+  that all this is done for each node independently, the  parallelism and
+  distributedness of the algorithm is achieved with  the help of PySpark.
+  All unique nodes on every iteration are added to the  pool.
 
 Options:
   --seed_ratio FLOAT    The fraction of seed nodes in the graph for which
@@ -45,9 +52,9 @@ Options:
 # References
 
 - Wang, T., Chen, Y., Zhang, Z., Xu, T., Jin, L., Hui, P., … Li, X. (2011). Understanding Graph Sampling Algorithms for Social Network Analysis.        
-    2011 31st International Conference on Distributed Computing Systems Workshops, 123–128.         
-    https://doi.org/10.1109/ICDCSW.2011.34https://doi.org/10.1109/ICDE.2015.7113345     
+&nbsp;&nbsp;2011 31st International Conference on Distributed Computing Systems Workshops, 123–128.         
+&nbsp;&nbsp;https://doi.org/10.1109/ICDCSW.2011.34https://doi.org/10.1109/ICDE.2015.7113345     
 
 - Li, R., Yu, J. X., Qin, L., Mao, R., & Jin, T. (2015). On random walk based graph sampling.               
-    2015 IEEE 31st International Conference on Data Engineering, 927–938.       
-    https://doi.org/10.1109/ICDE.2015.7113345       
+&nbsp;&nbsp;2015 IEEE 31st International Conference on Data Engineering, 927–938.       
+&nbsp;&nbsp;https://doi.org/10.1109/ICDE.2015.7113345       
