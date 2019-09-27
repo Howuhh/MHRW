@@ -49,6 +49,10 @@ Options:
 
 ![code](https://i.imgur.com/lCK1sW5.png)
 
+# TODO
+
+- add docstings (well, thats hard)
+
 # References
 
 - Wang, T., Chen, Y., Zhang, Z., Xu, T., Jin, L., Hui, P., … Li, X. (2011). Understanding Graph Sampling Algorithms for Social Network Analysis.        
