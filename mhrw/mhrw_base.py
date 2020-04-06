@@ -7,36 +7,21 @@ import pyspark.sql.functions as F
 
 from itertools import count
 from typing import Tuple
+
 from pyspark.sql.types import IntegerType
 from pyspark.sql import SparkSession
 from pyspark.sql import DataFrame
+
 from .utils import arr_choice, arr_len, rename_columns
 
-log.basicConfig(level=log.INFO, 
-                    format='%(levelname)s - %(asctime)s: %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+log.basicConfig(level=log.INFO,
+                format='%(levelname)s - %(asctime)s: %(message)s',
+                datefmt='%Y-%m-%d %H:%M:%S')
 
 
-# TODO: добавить загрузку айдишек + уникальные в return, так будет проще и для модели и для использования, т.к. 
-# для других не очевидно, что в файлик сохраняется адишки с повторениями.
 def MHRW(graph: DataFrame, ids_path: str, seed_ratio: float=0.001, 
-        budget_ratio: float=0.1, accept_func: str="MHRW", alpha: float=0.5) -> None:
-    """
-    Set docstring here.
-
-    Parameters
-    ----------
-    graph: 
-    tmp_path: 
-    seed_ratio=0.001: 
-    budget_ratio=0.1: 
-    accept_func="MHRW": 
-    alpha=0.5: 
-
-    Returns
-    -------
-
-    """
+        budget_ratio: float=0.1, accept_func: str="MHRW", alpha: float=0.5):
+    
     if not 0 <= seed_ratio <= 1:
         raise ValueError("seed ratio should be in range (0, 1)")
 
@@ -82,24 +67,9 @@ def MHRW(graph: DataFrame, ids_path: str, seed_ratio: float=0.001,
 
     seed_nodes.unpersist()
 
-    return None
-
 
 def _iter_MHRW(user_neigh: DataFrame, seed_nodes: DataFrame, accept_func: str="MHRW", alpha: float=0.5) -> Tuple[DataFrame, int]:
-    """
-    Set docstring here.
-
-    Parameters
-    ----------
-    user_neigh: 
-    seed_nodes: 
-    accept_func="MHRW": 
-    alpha=0.5: 
-
-    Returns
-    -------
-
-    """
+    
     if accept_func == "MHRW":
         if_select = F.udf(lambda q_ratio: 1 if np.random.uniform(0, 1) <= min(1, q_ratio) else 0, IntegerType())
     elif accept_func == "RCMH":

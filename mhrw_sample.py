@@ -15,7 +15,7 @@ from mhrw import MHRWSampler
                                                 - Rejection-Controlled Metropolis-Hastings Algorithm (RCMH).""")
 @click.option('--alpha', default=0.5, help="Only for RCMH. Alpha ∈ [0, 1] which parameterizes the acceptance function of node acceptance or rejection on each iteration. When alpha = 1 the algorithm is reduced to the original MHRW, when alpha = 0 to the simply random walk.")
 def main(edges_path: str, sample_save_path: str, seed_ratio: float, 
-         budget_ratio: float, method: str, alpha: float) -> None:
+         budget_ratio: float, method: str, alpha: float):
     """
     The MHRW algorithm is an application of the Metropolis-Hastings algorithm 
     for unbiased graph sampling. It makes use of a modified random walk to 

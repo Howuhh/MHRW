@@ -1,5 +1,6 @@
 # MHRW
-metropolis hastings random walk implementation with pyspark
+
+Metropolis hastings random walk implementation with pyspark.
 
 # How to use
 

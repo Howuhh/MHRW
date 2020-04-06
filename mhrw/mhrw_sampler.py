@@ -11,21 +11,6 @@ from pyspark.sql import SparkSession, DataFrame
 class MHRWSampler:
     def __init__(self, spark: SparkSession, ids_path: str, seed_ratio: float=0.001,
                  budget_ratio: float=0.1, method: str="MHRW", alpha: float=0.5):
-        """
-        Set docstring here.
-
-        Parameters
-        ----------
-        spark: 
-
-        Attributes
-        ----------
-        sampled_ids:
-
-        Notes
-        -----
-
-        """
         self.spark = spark
         self.ids_path = ids_path
 
@@ -38,7 +23,7 @@ class MHRWSampler:
         self._ids = None
 
     @property
-    def sampled_ids(self):
+    def sampled_ids(self) -> DataFrame:
         # return lazy dataframe
         if self._ids is None:
             try:
@@ -77,7 +62,6 @@ class MHRWSampler:
         return sampled_graph
 
     def clear_ids(self) -> str:
-        # is this clear?
         shutil.rmtree(self.ids_path)
 
         return self.ids_path

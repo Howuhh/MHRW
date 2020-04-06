@@ -8,6 +8,7 @@ from pyspark.sql.types import IntegerType, LongType
 
 from typing import Dict, Tuple
 
+
 arr_len = F.udf(lambda arr: len(arr), IntegerType())
 arr_choice = F.udf(lambda arr: int(np.random.choice(arr)), LongType())
 
