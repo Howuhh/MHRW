@@ -2,6 +2,8 @@
 
 Metropolis hastings random walk implementation with pyspark.
 
+`example.ipynb` - sampling fb friends network code example. 
+
 # How to use
 
 ```console
