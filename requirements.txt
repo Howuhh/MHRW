@@ -19,7 +19,7 @@ jsonschema==3.0.2
 jupyter==1.0.0
 jupyter-client==5.3.2
 jupyter-console==6.0.0
-jupyter-core==4.5.0
+jupyter-core==4.11.2
 kiwisolver==1.1.0
 llvmlite==0.29.0
 MarkupSafe==1.1.1
